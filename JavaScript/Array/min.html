@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script>
+        var numbers = [50,40,78,55,42,78,15,41,65,99,21,32];
+        var min = numbers[0];
+
+    
+        for(var value of numbers){
+            if(value < min){
+                console.log(value)
+                min = value;
+            }
+        }
+
+        document.write(`<h1>Minimum - ${ min } </h1>`);
+
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

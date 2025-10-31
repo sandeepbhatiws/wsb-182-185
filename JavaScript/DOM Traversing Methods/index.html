@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM Traversing Methods</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body id="body">
+
+    <div class="buttons">
+        <button onclick="getParentNode()">Parent Node</button>
+        <button onclick="getParentElement()">Parent Element</button>
+        <button onclick="getChildNode()">Child Node</button>
+        <button onclick="getChildren()">Children</button>
+
+        <button onclick="getFirstChild()">First Child</button>
+        <button onclick="getFirstElementChild()">First Element Child</button>
+
+        <button onclick="getLastChild()">Last Child</button>
+        <button onclick="getLastElementChild()">Last Element Child</button>
+
+        <button onclick="checkChildNodes()">Has Child Nodes</button>
+    </div>
+
+    <div class="main" id="main">
+
+        <div class="row" id="row1">
+            1. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio iusto nihil porro earum delectus repudiandae incidunt velit libero minima dolor quasi labore eius, ipsa sunt exercitationem aliquid omnis reiciendis optio.
+        </div>
+        <div class="row" id="row2">
+            2. Lorem ipsum dolor, sit amet <b>consectetur adipisicing elit</b>. Distinctio iusto nihil porro earum delectus repudiandae incidunt velit libero minima dolor quasi labore eius, ipsa sunt exercitationem aliquid omnis reiciendis optio.
+        </div>
+
+        3. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio iusto nihil porro earum delectus repudiandae incidunt velit libero minima dolor quasi labore eius, ipsa sunt exercitationem aliquid omnis reiciendis optio.
+
+        <div class="row" id="row3">
+            3. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio iusto nihil porro earum delectus repudiandae incidunt velit libero minima dolor quasi labore eius, ipsa sunt exercitationem aliquid omnis reiciendis optio.
+        </div>
+
+        <div id="output"></div>
+    </div>
+
+    <script src="js/custom.js"></script>
+</body>
+</html>

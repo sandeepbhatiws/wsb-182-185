@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM Properties</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="main" id="main">
+
+        <!-- <input onkeyup="copyCut(this)"/> -->
+
+        <input onchange="copyCut(this)"/>
+
+
+        <div class="row" id="row"></div>
+        
+    </div>
+
+    <script>
+
+        function copyCut(text){
+            console.log(text.value);
+            document.getElementById('row').innerText = text.value;
+        }
+
+    </script>
+</body>
+</html>

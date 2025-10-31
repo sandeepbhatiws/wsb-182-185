@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <title>Page Title</title>
+
+        <script>
+
+            var input = Number(prompt('Enter the value'));
+            var from = prompt('Enter the from eg - C, K, F').toLowerCase().trim();
+            var to = prompt('Enter the to eg - C, K, F').toLowerCase().trim();
+
+            if(from == to){
+                document.write('<h1>Value cannot be same</h1>')
+            } else if(from == 'c' && to == 'k'){
+                var output = input + 273.15;
+                document.write('<h1>'+ output +'</h1>')
+            } else if(from == 'f' && to == 'k') {
+                var output = (input - 32) * 5/9 + 273.15 
+                document.write('<h1>'+ output.toFixed(3) +'</h1>')
+
+            }
+
+
+
+        </script>
+    </head>
+<body>
+    
+</body>
+</html>

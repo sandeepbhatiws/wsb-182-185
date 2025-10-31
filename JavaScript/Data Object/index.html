@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Date Objects</title>
+    </head>
+    <body>
+        <div id="date"></div>
+    
+
+        <script>
+            var date = new Date();
+            document.getElementById('date').innerText = date;
+
+            setInterval(()=> {
+                var date = new Date();
+                document.getElementById('date').innerText = date;
+            },1000);
+
+            // console.log('Full Date - ' + date);
+            // console.log('Year - ' + date.getFullYear());
+            // console.log('Month - ' + (date.getMonth() + 1));
+            // console.log('Date - ' + date.getDate());
+            // console.log('Hours - ' + date.getHours());
+            // console.log('Minutes - ' + date.getMinutes());
+            // console.log('Seconds - ' + date.getSeconds());
+            // console.log('Mili Seconds - ' + date.getMilliseconds());
+            // console.log('Time - ' + date.getTime());
+            // console.log('Day - ' + date.getDay());
+
+
+            var currentDate = new Date();
+            var saleOffer = '17 Oct 2025';
+            var saleOffer = new Date(saleOffer);
+
+            var difference = saleOffer-currentDate;
+            
+            console.log(currentDate);
+            console.log(saleOffer);
+            console.log(difference);
+
+            console.log(difference/1000/60/60/24);
+            
+
+            console.log('Day - ' + Math.floor(difference/1000/60/60/24))
+            console.log('Hours - ' + (Math.floor(difference/1000/60/60)) % 24 )
+            console.log('Minutes - ' + (Math.floor(difference/1000/60)) % 60 )
+
+
+        </script>
+    </body>
+</html>

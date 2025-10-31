@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise</title>
+</head>
+<body>
+    
+
+    <script>
+        var data = fetch('https://dummyjson.com/posts');
+
+        // new Promise((accept, reject) => {
+        //     accept(data);
+        //     // reject(data)
+        // })
+        // .then((result)=> {
+        //     // console.log(result.json());
+        //     // console.log('Complete');
+
+        //     new Promise((complete, incomplete) => {
+        //         complete(result.json());
+        //     })
+        //     .then((response) => {
+        //         console.log(response);
+        //     })
+        //     .catch();
+        // })
+        // .catch(() => {
+        //     console.log('InComplete');
+        // });
+
+        async function apiData(){
+            var data = await fetch('https://dummyjson.com/posts');
+            var data = await data.json();
+            console.log(data);
+        }
+
+        apiData();
+
+    </script>
+</body>
+</html>

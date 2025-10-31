@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <title>Page Title</title>
+
+        <script>
+
+            var input = prompt('Enter the value eg:- red, green, yellow');
+
+            input = input.toUpperCase().trim();
+
+            console.log(input);
+
+            input = input.toLowerCase();
+
+            console.log(input);
+
+
+            if(input == 'red'){
+                document.write('<h1>Red Signal</h1>')
+            } else if(input == 'green'){
+                document.write('<h1>Green Signal</h1>')
+            } else if(input == 'yellow'){
+                document.write('<h1>Yellow Signal</h1>')
+            } else {
+                document.write('<h1>Invalid Value</h1>')
+            }
+        </script>
+    </head>
+<body>
+    
+</body>
+</html>

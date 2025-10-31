@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>Object</title>
+    </head>
+    <body>
+
+        <button onclick="sumArray()">Sum of Array</button>
+        <button onclick="averageArray()">Average of Array</button>
+        <button onclick="minArray()">Minimum value from Array</button>
+        <button onclick="maxArray()">maximum value from Array</button>
+        
+        <script>
+            var numbers = [10,20,30,40,50,15];
+            
+
+            function sumArray(){
+                var sum = 0;
+                for(var data of numbers){
+                    sum += data;
+                }
+
+                console.log('Sum '+ sum);
+            }
+
+            function averageArray(){
+                var sum = 0;
+                for(var data of numbers){
+                    sum += data;
+                }
+
+                console.log('Average '+ sum/numbers.length);
+            }
+
+            function minArray(){
+                var min = numbers[0];
+                for(var data of numbers){
+                    if(data < min){
+                        min = data;
+                    }
+                }
+
+                console.log('Min '+ min);
+            }
+
+            function maxArray(){
+                var max = numbers[0];
+                for(var data of numbers){
+                    if(data > max){
+                        max = data;
+                    }
+                }
+
+                console.log('Max '+ max);
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Magic Box </title>
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+        }
+        .main {
+            width: 600px;
+            height: 300px;
+            margin: 50px auto;
+            display: flex;
+            flex-wrap: wrap;
+           
+        }
+        .box {
+            width: 200px;
+            height: 100px;
+            border: 0.1px solid black;
+            box-sizing: border-box;
+            text-align: center;
+            line-height: 100px;
+            font-size: 30px;
+            font-weight: bold;
+            background-color: dimgray;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="box" id="box">1</div>
+        <div class="box">2</div>
+        <div class="box">3</div>
+        <div class="box">4</div>
+        <div class="box">5</div>
+        <div class="box">6</div>
+        <div class="box">7</div>
+        <div class="box">8</div>
+        <div class="box">9</div>
+    </div>
+</body>
+<script>
+    // const numbers = [];
+
+    // function change_bg(x) {
+    //     if(numbers.length < 9) {
+    //         x.style.backgroundColor = 'red';
+    //     }
+
+    //     if(numbers.includes(x.innerText)) {
+
+    //     } else {
+    //         numbers.push(x.innerText);
+    //     }
+    // }
+
+    // function change_defalt_bg(x) {
+    //     x.style.backgroundColor = 'dimgray';
+    // }
+
+
+    // function changeColor(){
+    //     document.getElementById('box').style.backgroundColor = 'red';
+    // }
+
+    // document.getElementById('box').addEventListener('mouseenter', changeColor);
+
+    // document.getElementById('box').addEventListener('mouseout', (event) => {
+    //     console.log(event.target.innerText);
+    //     document.getElementById('box').style.backgroundColor = 'gray';
+    // });
+
+    const numbers = [];
+    var allBoxes = document.querySelectorAll('.box');
+
+    allBoxes.forEach((element) => {
+        element.addEventListener('mouseenter', () => {
+            
+            if(numbers.length < 9) {
+                element.style.backgroundColor = 'red';
+            }
+
+            if(!numbers.includes(element.innerText)) {
+                numbers.push(element.innerText);
+            }
+        })
+
+        element.addEventListener('mouseout', () => {
+            element.style.backgroundColor = 'dimgray';
+        })
+        console.log(element);
+    })
+
+    
+</script>
+</html>

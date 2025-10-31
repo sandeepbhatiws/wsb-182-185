@@ -1,0 +1,30 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+
+a{
+	text-decoration: none;
+	color: black;
+}
+
+/*body{
+	background: black;
+}*/
+
+.row{
+	max-width: 1200px;
+	margin: auto;
+	box-sizing: border-box;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.column{
+	border: 1px solid black;
+	padding: 15px;
+	box-sizing: border-box;
+	border-radius: 15px;
+	flex-basis: 23%;
+	margin: 1%;
+}

@@ -1,0 +1,120 @@
+<html>
+    <head>
+        <title>Date Objects</title>
+
+        <style>
+            .outer_date{
+                width: 1000px;
+                margin: auto;
+                margin-top: 100px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .date{
+                background-color: black;
+                color: white;
+                border-radius: 15px;
+                padding: 15px;
+                font-weight: bold;
+                font-size: 18px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <button onclick="startTime()" >Start Time Out</button>
+        <button onclick="clearTime()">Clear Time Out</button>
+
+        <button onclick="startWatch()">Start Watch</button>
+        <button onclick="stopWatch()">Stop Watch</button>
+        <button onclick="clearWatch()">Clear Watch</button>
+
+        <div id="date"></div>
+
+        <div class="outer_date">
+            <div class="date" id="days"> 0 Days</div>
+            <div class="date" id="hours"> 0 Hours</div>
+            <div class="date" id="minutes"> 0 Minutes</div>
+            <div class="date" id="seconds"> 0 Seconds</div>
+            <div class="date" id="miliseconds"> 0 Mili Seconds</div>
+        </div>
+    
+
+        <script>
+            // function clickMe(){
+            //     document.getElementById('date').innerText = new Date();
+            // }
+
+            // setTimeout(clickMe,5000);
+
+            // setTimeout(() => {
+            //     document.getElementById('date').innerText = new Date();
+            // }, 10000);
+
+            var x;
+
+            const startTime = () => {
+                x = setTimeout(() => {
+                    document.getElementById('date').innerText = new Date();
+                }, 5000);
+            }
+
+            const clearTime = () => {
+                clearTimeout(x);
+            }
+
+            var start = '';
+            var counter = 20;
+
+            const startWatch = () => {
+                start = setInterval(() => {
+                    counter--;
+                    if(counter > 0){
+                        document.getElementById('date').innerText = counter;
+                    }
+                },1000);
+            }
+
+            const stopWatch = () => {
+                clearInterval(start);
+            }
+
+            const clearWatch = () => {
+                counter = 20;
+                document.getElementById('date').innerText = counter;
+                clearInterval(start);
+            }
+
+
+
+            
+            setInterval(showData,1000);
+
+
+            function showData(){
+                var currentDate = new Date();
+                var saleOffer = '16 Oct 2025';
+                var saleOffer = new Date(saleOffer);
+                var difference = saleOffer - currentDate;
+                if(difference > 0){
+                    document.getElementById('days').innerText = Math.floor(difference/1000/60/60/24) + ' Days';
+                    document.getElementById('hours').innerText = Math.floor(difference/1000/60/60 % 24) + ' Hours';
+                    document.getElementById('minutes').innerText = Math.floor(difference/1000/60 % 60) + ' Minutes';
+                    document.getElementById('seconds').innerText = Math.floor(difference/1000 % 60) + ' Seconds';
+                    document.getElementById('miliseconds').innerText = Math.floor(difference % 1000) + ' MiliSeconds';
+                }
+            }
+
+            showData();
+
+            // console.log(difference/1000/60/60/24);
+            
+
+            // console.log('Day - ' + Math.floor(difference/1000/60/60/24))
+            // console.log('Hours - ' + (Math.floor(difference/1000/60/60)) % 24 )
+            // console.log('Minutes - ' + (Math.floor(difference/1000/60)) % 60 )
+
+
+        </script>
+    </body>
+</html>

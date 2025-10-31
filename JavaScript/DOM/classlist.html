@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM Properties</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="main" id="main">
+
+        <button onmouseover="addProperties()" onmouseout="removeProperties()">Add CSS Properties</button>
+        <button ondblclick="addClass()" >Add Class</button>
+        <button onmouseenter="removeClass()">Remove Class</button>
+        <button onclick="toggleClass()">Toogle Class</button>
+        
+        <button onmousedown="addProperties()" onmouseup="removeProperties()">Add CSS Properties</button>
+        <button onmousewheel="addProperties()" >Add Class</button>
+        <button onmousemove="addProperties()" >Add Class</button>
+
+
+        <div class="row" id="row">
+            1. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio iusto nihil porro earum delectus repudiandae incidunt velit libero minima dolor quasi labore eius, ipsa sunt exercitationem aliquid omnis reiciendis optio.
+        </div>
+        
+    </div>
+
+
+    <script>
+
+        function addProperties(){
+            console.log('Start');
+            document.getElementById('row').style.backgroundColor = 'red';
+            document.getElementById('row').style.color = 'white';
+        }
+
+        removeProperties = () => {
+            console.log('End');
+            document.querySelector('#row')
+            document.getElementById('row').style.backgroundColor = 'white';
+            document.getElementById('row').style.color = 'black';
+        }
+
+        function addClass(){
+            console.log('Start');
+            document.getElementById('row').classList.add('content');
+        }
+
+        function removeClass(){
+            document.getElementById('row').classList.remove('content');
+        }
+
+        function toggleClass(){
+            document.getElementById('row').classList.toggle('content');
+        }
+
+    </script>
+</body>
+</html>

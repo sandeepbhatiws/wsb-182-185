@@ -1,0 +1,165 @@
+@media only screen and (min-width:769px) and (max-width:1024px) {
+	.inner_header{
+		padding: 15px;
+	}
+	.outer_career_opurtunities {
+		padding: 15px;
+		box-sizing: border-box;
+	}
+	.left_career_opurtunities h1{
+		font-size: 45px;
+	}
+	.book_button{
+		padding: 15px;
+	}
+	.download_button{
+		padding: 15px;	
+	}
+}
+
+@media only screen and (min-width:427px) and (max-width:768px) {
+	.inner_header{
+		padding: 15px;
+	}
+	.outer_career_opurtunities {
+		padding: 15px;
+		box-sizing: border-box;
+	}
+	.inner_career_opurtunities{
+		flex-direction: column;
+		text-align: center;
+	}
+	.left_career_opurtunities h1{
+		font-size: 45px;
+	}
+	.left_career_opurtunities ul li{
+		justify-content: center;
+	}
+	.outer_book_button{
+		justify-content: center;
+	}
+	.book_button{
+		padding: 15px;
+	}
+	.download_button{
+		padding: 15px;	
+	}
+	.right_career_opurtunities{
+		width: 512px;
+		height: 512px;
+	}
+}
+
+@media only screen and (min-width:377px) and (max-width:426px) {
+	.inner_header{
+		padding: 15px;
+		flex-direction: column;
+		align-items: center;
+	}	
+	.header_right{
+		margin-top: 10px;
+	}
+	.outer_career_opurtunities {
+		padding: 15px;
+		box-sizing: border-box;
+	}
+	.inner_career_opurtunities{
+		flex-direction: column;
+		text-align: center;
+	}
+	.left_career_opurtunities{
+		padding-right: 0px;
+	}
+	.left_career_opurtunities h1{
+		font-size: 30px;
+		line-height: 20px;
+	}
+	.left_career_opurtunities span{
+		font-size: 30px;
+	}
+	.left_career_opurtunities p{
+		font-size: 18px;
+		line-height: 28px;
+	}
+	.left_career_opurtunities ul li{
+		/*justify-content: center;*/
+	}
+	.carrer_content{
+		font-size: 18px;
+	}
+	.outer_book_button{
+		justify-content: center;
+	}
+	.book_button{
+		padding: 10px;
+		font-size: 16px;
+	}
+	.download_button{
+		padding: 10px;
+		font-size: 16px;
+	}
+	.right_career_opurtunities{
+		width: 512px;
+		height: 512px;
+	}
+}
+
+@media only screen and (max-width:376px) {
+	.inner_header{
+		padding: 15px;
+		flex-direction: column;
+		align-items: center;
+	}	
+	.header_right{
+		margin-top: 10px;
+	}
+	.outer_career_opurtunities {
+		padding: 15px;
+		box-sizing: border-box;
+	}
+	.inner_career_opurtunities{
+		flex-direction: column;
+		text-align: center;
+	}
+	.left_career_opurtunities{
+		padding-right: 0px;
+	}
+	.left_career_opurtunities h1{
+		font-size: 30px;
+		line-height: 20px;
+	}
+	.left_career_opurtunities span{
+		font-size: 30px;
+	}
+	.left_career_opurtunities p{
+		font-size: 18px;
+		line-height: 28px;
+	}
+	.left_career_opurtunities ul li{
+		text-align: left;
+		align-items: flex-start;
+	}
+	.carrer_content{
+		font-size: 18px;
+		line-height: 28px;
+	}
+	.outer_book_button{
+		justify-content: center;
+		flex-direction: column;
+	}
+	.book_button{
+		padding: 10px;
+		font-size: 16px;
+		margin-right: 0px;
+		margin-bottom: 15px;
+	}
+	.download_button{
+		padding: 10px;
+		font-size: 16px;
+		justify-content: center;
+	}
+	.right_career_opurtunities{
+		width: 512px;
+		height: 512px;
+	}
+}

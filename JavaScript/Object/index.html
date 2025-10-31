@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Object</title>
+    </head>
+    <body>
+        
+        <script>
+            var user = {
+                email : "user@gmail.com",
+                name : 'User Name',
+                mobile_number : 1234567890
+            }
+
+
+            console.log(user.email)
+
+
+            var userInfos = [
+                {
+                    name : 'User Name 1',
+                    email : "user1@gmail.com",
+                    mobile_number : 1234567890
+                },
+                {
+                    email : "user2@gmail.com",
+                    name : 'User Name 2',
+                    mobile_number : 1234567890
+                },
+                {
+                    email : "user3@gmail.com",
+                    name : 'User Name 3',
+                    mobile_number : 1234567890
+                }
+            ]
+
+            for (var data of userInfos){
+                console.log(data.name, data.email);
+            }
+
+        </script>
+    </body>
+</html>

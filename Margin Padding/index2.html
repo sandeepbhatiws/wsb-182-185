@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Margin Padding</title>
+	<style>
+		*{
+			margin: 0px;
+			padding: 0px;
+		}
+
+		.building{
+			width: 1000px;
+			height: 540px;
+			border: 1px solid black;
+			box-sizing: border-box;
+			margin: auto;
+		}
+		.floor1{
+			width: 1000px;
+			height: 100px;
+			border: 1px solid black;
+			box-sizing: border-box;
+			text-align: center;
+			font-weight: bold;
+			text-transform: uppercase;
+			font-size: 24px;
+			padding-top: 40px;
+		}
+
+		.floor2{
+			width: 1000px;
+			height: 40px;
+			border: 1px solid black;
+			box-sizing: border-box;
+			display: flex;
+		}
+		.floor2room{
+			width: 200px;
+			height: 40px;
+			border: 1px solid black;
+			box-sizing: border-box;
+			text-align: center;
+			font-weight: bold;
+			padding-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="building">
+		<div class="floor1">Wscubetech</div>
+
+		<div class="floor2">
+			<div class="floor2room">Home</div>
+			<div class="floor2room">About</div>
+			<div class="floor2room">Course</div>
+			<div class="floor2room">Gallery</div>
+			<div class="floor2room">Contact Us</div>
+		</div>
+	</div>
+</body>
+</html>
