@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import data from '../faqData'
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa'
+import Question from './Question';
 
 export default function Accordian() {
 
@@ -25,23 +26,7 @@ export default function Accordian() {
                     {
                         data.map((item, index) => {
                             return (
-                                <div class="main_question" key={ index }>
-                                    <div class="outer_question" onClick={ () => setQuestion(index) }>
-                                        <div class="question" >{ index+1 }. { item.question }</div>
-                                        <div class="icon">
-                                            {
-                                                currentIndex == index
-                                                ?
-                                                    <FaMinusCircle />
-                                                :
-                                                    <FaPlusCircle />
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class={ currentIndex == index ? "answer" : "answer d-none" }>
-                                        { item.answer }
-                                    </div>
-                                </div>
+                                <Question key={index} index={index} item = {item} currentIndex ={currentIndex} setQuestion={setQuestion}/>
                             )
                         })
                     }

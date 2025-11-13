@@ -1,0 +1,35 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+.main{
+    max-width: 1200px;
+    margin: auto;
+    padding: 50px 0px;
+    box-sizing: border-box;
+}
+.heading{
+    text-align: center;
+}
+
+.product_listings{
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+.products{
+    box-shadow: 0px 0px 3px 1px gray;
+    border-radius: 15px;
+    flex-basis: 31%;
+    margin: 1%;
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.product_image img{
+    width: 100%;
+}
+.product_content h2{
+    margin-bottom: 10px;
+}
