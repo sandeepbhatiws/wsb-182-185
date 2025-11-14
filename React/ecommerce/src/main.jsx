@@ -7,6 +7,7 @@ import AboutUs from './Components/AboutUs'
 import Rootlayout from './Components/Rootlayout'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import ProductListing from './Components/ProductListing'
 
 createRoot(document.getElementById('root')).render(
   <>
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')).render(
           <Route element={<Rootlayout/>}>
               <Route path='/' element={ <Home/> }/>
               <Route path='about-us' element={ <AboutUs/> } />
+              <Route path='products/:category?' element={ <ProductListing/> } />
           </Route>
 
           <Route path='gallery' element={ <AboutUs/> } />
