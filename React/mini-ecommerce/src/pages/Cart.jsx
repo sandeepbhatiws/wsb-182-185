@@ -1,20 +1,24 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import './Cart.css'
+import { useContext, useEffect, useState } from 'react'
+import { Context } from '../context/CommonContext'
 
 export const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart()
+  const { cartItems, updateCart, removeCart, clearCart} = useContext(Context);
+  const [totalAmount, setTotalAmount] = useState(0);
+  
+  useEffect(() => {
+    var sum = 0;
 
-  const handleQuantityChange = (productId, newQuantity) => {
-    if (newQuantity >= 1) {
-      updateQuantity(productId, newQuantity)
-    }
-  }
+    cartItems.forEach((v) => {
+      sum += v.price * v.quantity
+    })
 
-  const totalPrice = getTotalPrice()
-  const tax = totalPrice * 0.1
-  const shipping = totalPrice > 50 ? 0 : 10
-  const grandTotal = totalPrice + tax + shipping
+    setTotalAmount(sum);
+  },[cartItems]);
+
+  
 
   if (cartItems.length === 0) {
     return (
@@ -55,17 +59,16 @@ export const Cart = () => {
                   <img src={item.image} alt={item.name} />
                   <div className="product-details">
                     <h3>{item.name}</h3>
-                    <p className="brand">{item.brand}</p>
                   </div>
                 </div>
 
                 <div className="item-price">
-                  ${item.price.toFixed(2)}
+                  ${item.price}
                 </div>
 
                 <div className="item-quantity">
                   <button
-                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                    onClick={() => updateCart(item.id, 'minus')}
                     className="qty-btn"
                   >
                     −
@@ -74,11 +77,11 @@ export const Cart = () => {
                     type="number"
                     min="1"
                     value={item.quantity}
-                    onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
                     className="qty-input"
+                    disabled
                   />
                   <button
-                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                    onClick={() => updateCart(item.id, 'plus')}
                     className="qty-btn"
                   >
                     +
@@ -91,7 +94,7 @@ export const Cart = () => {
 
                 <div className="item-action">
                   <button
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={() => removeCart(item.id)}
                     className="btn-remove"
                   >
                     🗑️ Remove
@@ -114,7 +117,7 @@ export const Cart = () => {
             <div className="order-summary">
               <h2>Order Summary</h2>
 
-              <div className="summary-row">
+              {/* <div className="summary-row">
                 <span>Subtotal</span>
                 <span className="amount">${totalPrice.toFixed(2)}</span>
               </div>
@@ -137,13 +140,13 @@ export const Cart = () => {
                   <br />
                   Add ${(50 - totalPrice).toFixed(2)} more.
                 </div>
-              )}
+              )} */}
 
               <div className="summary-divider"></div>
 
               <div className="summary-row total">
                 <span>Total</span>
-                <span className="amount">${grandTotal.toFixed(2)}</span>
+                <span className="amount">${totalAmount.toFixed(2)}</span>
               </div>
 
               <button className="btn-checkout">

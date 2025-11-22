@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import './Navigation.css'
+import { useContext } from 'react'
+import { Context } from '../context/CommonContext'
 
 export const Navigation = () => {
-  const { cartItems } = useCart()
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0)
+
+  const { isLogin, cartItems } = useContext(Context);
 
   return (
     <nav className="navbar">
@@ -22,9 +24,35 @@ export const Navigation = () => {
           <li>
             <Link to="/cart" className="nav-link">
               Cart
-              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+              {
+                cartItems.length > 0
+                ?
+                <span className="cart-badge">{cartItems.length}</span>
+                :
+                ''
+              }
+              
             </Link>
           </li>
+
+          {
+            isLogin == 1
+            ?
+            <li>
+              <Link className="nav-link">Logout</Link>
+            </li>
+            :
+            <>
+              <li>
+                <Link className="nav-link">Login</Link>
+              </li>
+
+              <li>
+                <Link className="nav-link">Register</Link>
+              </li>
+            </>
+          }
+
         </ul>
       </div>
     </nav>

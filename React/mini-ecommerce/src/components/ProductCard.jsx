@@ -1,14 +1,20 @@
+import { useContext } from 'react'
 import { useCart } from '../context/CartContext'
 import './ProductCard.css'
+import { Context } from '../context/CommonContext'
 
 export const ProductCard = ({ product, onViewDetails }) => {
-  const { addToCart } = useCart()
 
-  const handleAddToCart = (e) => {
-    e.preventDefault()
-    addToCart(product)
-    alert(`${product.name} added to cart!`)
-  }
+  const { addToCart } = useContext(Context);
+
+
+  // const { addToCart } = useCart()
+
+  // const handleAddToCart = (e) => {
+  //   e.preventDefault()
+  //   addToCart(product)
+  //   alert(`${product.name} added to cart!`)
+  // }
 
   const renderStars = (rating) => {
     return (
@@ -35,7 +41,7 @@ export const ProductCard = ({ product, onViewDetails }) => {
         {renderStars(product.rating)}
         <div className="product-footer">
           <span className="product-price">${product.price}</span>
-          <button onClick={handleAddToCart} className="btn-add-cart">
+          <button onClick={() => addToCart(product)} className="btn-add-cart">
             Add to Cart
           </button>
         </div>
