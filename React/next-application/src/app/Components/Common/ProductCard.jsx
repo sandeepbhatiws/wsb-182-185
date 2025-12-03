@@ -1,7 +1,7 @@
+import { addToCart } from '@/app/Redux Toolkit/cartSlice';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router'
-import { addToCart } from '../../Redux Toolkit/cartSlice';
 
 export default function ProductCard({ data }) {
 
@@ -29,7 +29,7 @@ export default function ProductCard({ data }) {
         <>
             <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                 <div class="h-56 w-full">
-                    <Link to={`/product-details/${data.id}`}>
+                    <Link href={`/product-details/${data.id}`}>
                         <img class="mx-auto h-full dark:hidden" src={data.image} alt="" />
                         <img class="mx-auto hidden h-full dark:block" src={data.image} alt="" />
                     </Link>

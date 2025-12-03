@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, logout } from '../../Redux Toolkit/userSlice';
 
 const navigation = [
   { name: 'Product', href: '#' },
@@ -12,6 +14,17 @@ const navigation = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const isLogin = useSelector((getState) => {
+    return getState.user_login.isLogin;
+  })
+
+  const cartItems = useSelector((getState) => {
+    return getState.cart.cartItems;
+  })
+
+  // Make Exucutable Function
+  var dispatch = useDispatch();
 
   return (
     <>
@@ -58,10 +71,31 @@ export default function Header() {
               <button className="relative bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
                 View Cart
                 <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
-                  3
+                  {cartItems.length}
                 </span>
               </button>
             </Link>
+
+            {
+              isLogin
+              ?
+              <button onClick={ () => dispatch(logout()) } className="relative bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                Logout
+              </button>
+              :
+              <>
+                <button onClick={ () => dispatch(login()) } className="relative bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                  Login
+                </button>
+
+                <button className="relative bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                  Register
+                </button>
+              </>
+            }
+            
+
+            
 
             {/* Mobile Toggle */}
             <button

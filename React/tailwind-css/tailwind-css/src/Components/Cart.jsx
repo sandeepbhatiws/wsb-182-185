@@ -1,7 +1,25 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CartCard from './Cart/CartCard'
+import { useSelector } from 'react-redux';
 
 export default function Cart() {
+
+    const cartItems = useSelector((getState) => {
+        return getState.cart.cartItems;
+    })
+
+    const [totalAmount, setTotalAmount] = useState(0);
+
+    useEffect(() => {
+        var sum = 0;
+        cartItems.forEach((v) => {
+            sum += v.price * v.quantity;
+        })
+
+        setTotalAmount(sum);
+    },[cartItems]);
+
+
     return (
         <div className="w-full bg-gray-50 dark:bg-gray-900 py-8">
             <div className="max-w-[1300px] p-3 mx-auto md:flex gap-10">
@@ -13,7 +31,14 @@ export default function Cart() {
 
                     {/* Cart Item 1 */}
 
-                    <CartCard />
+                    {
+                        cartItems.map((v,i) => {
+                            return(
+                                <CartCard key={i} cart={v} />
+                            )
+                        })
+                    }
+                    
                 </div>
 
                 {/* ---------- RIGHT SIDE: BILLING ---------- */}
@@ -30,7 +55,7 @@ export default function Cart() {
                         </li>
                         <hr className="border-gray-300 dark:border-gray-600" />
                         <li className="flex justify-between font-bold text-gray-900 dark:text-white">
-                            Total <span>₹ 3997</span>
+                            Total <span>₹ {totalAmount}</span>
                         </li>
                     </ul>
 
