@@ -26,7 +26,7 @@ export default function Productlisting() {
 
     useEffect(() => {
         if(params.slug){
-            axios.get('https://wscubetech.co/ecommerce-api/products.php', {
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/products.php`, {
                 params: {
                     limit: 16,
                     sorting: sorting,
@@ -42,7 +42,7 @@ export default function Productlisting() {
                     toast.error('Something went wrong !!');
                 });
         } else {
-            axios.get('https://wscubetech.co/ecommerce-api/products.php', {
+            axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/products.php`, {
                 params: {
                     limit: 16,
                     sorting: sorting,

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import '../../assets/css/style.css'
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { login, logout } from '@/app/Redux Toolkit/userSlice';
 
 export default function Header() {
     const [mobileOpen, setMobileOpen] = useState(false);

@@ -15,9 +15,11 @@ export default function Home() {
   const [mensProducts, setMensProducts] = useState([]);
   const [womenProducts, setWomenProducts] = useState([]);
 
+  console.log(process.env.NEXT_PUBLIC_BASE_URL);
+
 
   useEffect(() => {
-    axios.get('https://wscubetech.co/ecommerce-api/products.php', {
+    axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/products.php`, {
         params : {
           limit : 8,
           categories : 'mens-shirts,mens-shoes'
@@ -32,7 +34,7 @@ export default function Home() {
   },[]);
 
   useEffect(() => {
-    axios.get('https://wscubetech.co/ecommerce-api/products.php', {
+    axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/products.php`, {
         params : {
           limit : 8,
           categories : 'tops,womens-bags,womens-dresses,womens-shoes,womens-watches,womens-jewellery,skin-care'

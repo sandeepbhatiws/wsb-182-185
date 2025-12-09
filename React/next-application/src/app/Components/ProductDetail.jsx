@@ -12,7 +12,7 @@ export default function ProductDetail() {
     const [multipleImages, setMultipleImages] = useState([]);
 
     useEffect(() => {
-        axios.get(`https://wscubetech.co/ecommerce-api/productdetails.php?id=${params.id}`)
+        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/productdetails.php?id=${params.id}`)
             .then((result) => {
                 setProductDetails(result.data.product)
                 setSingleImage(result.data.product.multiple_images[0])
