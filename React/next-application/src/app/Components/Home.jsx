@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ProductSection from './ProductSection';
+import { menProducts, womenProducts } from '../APIServices/services';
 
-export default function Home() {
+export default async function Home({mensProducts, womenProducts}) {
 
   const [title, setTitle] = useState('Celebration wear for Men');
   const [description, setDescription] = useState("Welcome to Bagtesh Fashion Buy Indian Men's Ethnic suits, Tuxedos, Sherwanis, Nehru jacket, Jodhpurs pants, Blazers, Shirts and much more.")
@@ -12,41 +13,43 @@ export default function Home() {
   const [womenTitle, setWomenTitle] = useState('Celebration wear for Women');
   const [womenDescription, setWomenDescription] = useState("Beautiful collection of Lehenga cholis, Sarees, Salwar suits for engagement, wedding and other ethnic occasions.")
 
-  const [mensProducts, setMensProducts] = useState([]);
-  const [womenProducts, setWomenProducts] = useState([]);
+  // const [mensProducts, setMensProducts] = useState([]);
+  // const [womenProducts, setWomenProducts] = useState([]);
 
-  console.log(process.env.NEXT_PUBLIC_BASE_URL);
+  // console.log(process.env.NEXT_PUBLIC_BASE_URL);
 
 
-  useEffect(() => {
-    axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/products.php`, {
-        params : {
-          limit : 8,
-          categories : 'mens-shirts,mens-shoes'
-        }
-    })
-    .then((result) => {
-      setMensProducts(result.data.data)
-    })
-    .catch(() => {
-      toast.error('Something went wrong !!')
-    })
-  },[]);
+  // useEffect(() => {
+  //   axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/products.php`, {
+  //       params : {
+  //         limit : 8,
+  //         categories : 'mens-shirts,mens-shoes'
+  //       }
+  //   })
+  //   .then((result) => {
+  //     setMensProducts(result.data.data)
+  //   })
+  //   .catch(() => {
+  //     toast.error('Something went wrong !!')
+  //   })
+  // },[]);
 
-  useEffect(() => {
-    axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/products.php`, {
-        params : {
-          limit : 8,
-          categories : 'tops,womens-bags,womens-dresses,womens-shoes,womens-watches,womens-jewellery,skin-care'
-        }
-    })
-    .then((result) => {
-      setWomenProducts(result.data.data)
-    })
-    .catch(() => {
-      toast.error('Something went wrong !!')
-    })
-  },[]);
+  // useEffect(() => {
+  //   axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/products.php`, {
+  //       params : {
+  //         limit : 8,
+  //         categories : 'tops,womens-bags,womens-dresses,womens-shoes,womens-watches,womens-jewellery,skin-care'
+  //       }
+  //   })
+  //   .then((result) => {
+  //     setWomenProducts(result.data.data)
+  //   })
+  //   .catch(() => {
+  //     toast.error('Something went wrong !!')
+  //   })
+  // },[]);
+
+  
 
   return (
     <>
