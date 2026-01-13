@@ -4,13 +4,20 @@ import { MdOutlineClose } from "react-icons/md";
 import { Link } from "react-router-dom";
 import iziToast from "izitoast";
 import axios from 'axios';
+import ResponsivePagination from 'react-responsive-pagination';
+import 'react-responsive-pagination/themes/classic-light-dark.css';
+
 export default function ViewMaterial() {
   const [openFilter, setOpenFilter] = useState(false);
   const [materials, setMaterials] = useState([]);
   const [filterData, setFilterData] = useState({})
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, settotalPages] = useState(0);
+  const [apiStatus, setApiStatus] = useState(false);
 
   const applyFilter = (e) => {
     e.preventDefault();
+    setCurrentPage(1);
 
     let obj = {
       name: e.target.name.value,
@@ -22,43 +29,81 @@ export default function ViewMaterial() {
   useEffect(() => {
     axios.post(`http://localhost:5000/api/admin/materials/view`, {
       name: filterData.name,
-      limit: '',
-      page: 1
+      page: currentPage
     })
-    .then((result) => {
-      setMaterials(result.data._data);
-    })
-    .catch(() => {
-      iziToast.error({
-        title: 'Error',
-        message: 'Something went wrong !',
-        position: 'topRight',
-      });
-    })
-  },[filterData])
-  
+      .then((result) => {
+        if(result.data._status == true){
+          setMaterials(result.data._data);
+          settotalPages(result.data._paginate.total_pages)
+        } else {
+          setMaterials([]);
+          settotalPages(0)
+        }
+        
+      })
+      .catch(() => {
+        iziToast.error({
+          title: 'Error',
+          message: 'Something went wrong !',
+          position: 'topRight',
+        });
+      })
+  }, [filterData, currentPage, apiStatus])
 
-
-
-
-
-
-
-
-
-
-  
   const [selectedRecord, setSelectedRecord] = useState([])
 
+  const singleCheckSelect = (id) => {
+    if (selectedRecord.includes(id)) {
+      let finalData = selectedRecord.filter((v) => {
+        if (v != id) {
+          return v
+        }
+      })
+
+      setSelectedRecord(finalData)
+    } else {
+      let finalData = [...selectedRecord, id]
+      setSelectedRecord(finalData)
+    }
+  }
+
+  const allCheckBoxSelect = () => {
+    if(materials.length == selectedRecord.length){
+      setSelectedRecord([]);
+    } else {
+      var values = [];
+
+      materials.forEach((v) => {
+        values.push(v._id);
+      })
+
+      setSelectedRecord([...values]);
+
+    }
+  }
   const changeStatus = () => {
     if (selectedRecord.length > 0) {
-      iziToast.success({
-        title: "Status Updated",
-        message: "Material status updated successfully.",
-        position: "topRight",
-      });
-
-      setSelectedRecord([]);
+      axios.put(`http://localhost:5000/api/admin/materials/change-status`, {
+        ids: selectedRecord,
+      })
+        .then((result) => {
+          if(result.data._status == true){
+            iziToast.success({
+              title: "Change Status",
+              message: result.data._message,
+              position: "topRight",
+            });
+            setSelectedRecord([]);
+            setApiStatus(!apiStatus);
+          }
+        })
+        .catch(() => {
+          iziToast.error({
+            title: 'Error',
+            message: 'Something went wrong !',
+            position: 'topRight',
+          });
+        })
     } else {
       iziToast.error({
         title: "No Selection",
@@ -78,33 +123,20 @@ export default function ViewMaterial() {
         id: "delete-confirm",
         zindex: 999999,
         title: "Confirm Delete",
-        message: "Do you really want to delete selected materials? This action cannot be undone.",
+        message: "Are you sure you want to delete ?",
         position: "center",
         buttons: [
           [
-            "<button><b>YES, Delete</b></button>",
+            "<button><b>Yes</b></button>",
             function (instance, toast) {
-              setSelectedRecord([]);
-
-              iziToast.success({
-                title: "Deleted",
-                message: "Selected materials have been deleted successfully.",
-                position: "topRight",
-              });
-
+              destroy();
               instance.hide({ transitionOut: "fadeOut" }, toast);
             },
             true,
           ],
           [
-            "<button>Cancel</button>",
+            "<button>No</button>",
             function (instance, toast) {
-              iziToast.info({
-                title: "Cancelled",
-                message: "Material delete action cancelled.",
-                position: "topRight",
-              });
-
               instance.hide({ transitionOut: "fadeOut" }, toast);
             },
           ],
@@ -113,32 +145,36 @@ export default function ViewMaterial() {
 
     } else {
       iziToast.error({
-        title: "No Selection",
+        title: "Error",
         message: "Please select at least one material to delete.",
         position: "topRight",
       });
     }
   };
 
-
-
-  const SingleCheckSelect = (id) => {
-    if (selectedRecord.includes(id)) {
-      let finalData = selectedRecord.filter((v) => {
-        if (v != id) {
-          return v
-        }
-      })
-
-      setSelectedRecord(finalData)
-    } else {
-      let finalData = [...selectedRecord, id]
-      setSelectedRecord(finalData)
-    }
-
-
-  }
-
+  const destroy = () => {
+    axios.put(`http://localhost:5000/api/admin/materials/delete`, {
+      ids: selectedRecord,
+    })
+    .then((result) => {
+      if(result.data._status == true){
+        iziToast.success({
+          title: "Delete",
+          message: result.data._message,
+          position: "topRight",
+        });
+        setSelectedRecord([]);
+        setApiStatus(!apiStatus);
+      }
+    })
+    .catch(() => {
+      iziToast.error({
+        title: 'Error',
+        message: 'Something went wrong !',
+        position: 'topRight',
+      });
+    })
+  };
 
   return (
     <>
@@ -251,6 +287,8 @@ export default function ViewMaterial() {
                   <tr>
                     <th className="px-2 w-[125px] py-3">
                       <input name="deleteCheck" id="purple-checkbox" type="checkbox"
+                      checked={ selectedRecord.length == materials.length ? true : false }
+                      onClick={ allCheckBoxSelect }
                         className="mr-2 w-4 h-4 cursor-pointer text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500" value="" />    Select</th>
                     <th className="px-2   py-3">Name</th>
                     <th className="px-2 w-[100px]  py-3">Order</th>
@@ -268,7 +306,7 @@ export default function ViewMaterial() {
                           <>
                             <tr className="bg-white border-b" key={i}>
                               <td className="px-2 py-4">
-                                <input type="checkbox" onClick={() => SingleCheckSelect(1)} checked={selectedRecord.includes(1)} className="w-4 h-4 cursor-pointer text-purple-600" />
+                                <input type="checkbox" onClick={() => singleCheckSelect(v._id)} checked={selectedRecord.includes(v._id)} className="w-4 h-4 cursor-pointer text-purple-600" />
                               </td>
 
                               <td className="px-2 py-4">{v.name}</td>
@@ -301,6 +339,14 @@ export default function ViewMaterial() {
 
                 </tbody>
               </table>
+            </div>
+
+            <div className='p-5'>
+              <ResponsivePagination
+                current={currentPage}
+                total={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
 

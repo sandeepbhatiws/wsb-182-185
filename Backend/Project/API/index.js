@@ -27,6 +27,7 @@ server.get('/', (request, response) => {
 // Admin
 require('./src/routes/admin/default.route')(server);
 require('./src/routes/admin/material.route')(server);
+require('./src/routes/admin/color.route')(server);
 
 
 

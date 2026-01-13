@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react'
 import { FaFilter } from "react-icons/fa";
 import { MdOutlineClose } from "react-icons/md";
 import { Link } from "react-router-dom";
 import iziToast from "izitoast";
+import axios from 'axios';
+import ResponsivePagination from 'react-responsive-pagination';
+import 'react-responsive-pagination/themes/classic-light-dark.css';
 
 export default function ViewColor() {
   const [openFilter, setOpenFilter] = useState(false);
+  const [colors, setColors] = useState([]);
   const [filterData, setFilterData] = useState({})
-  const [selectedRecord, setSelectedRecord] = useState([])
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, settotalPages] = useState(0);
+  const [apiStatus, setApiStatus] = useState(false);
 
   const applyFilter = (e) => {
     e.preventDefault();
+    setCurrentPage(1);
 
     let obj = {
       name: e.target.name.value,
@@ -18,21 +25,35 @@ export default function ViewColor() {
     };
 
     setFilterData(obj);
-
-    iziToast.success({
-      title: "Success",
-      message: "Filter applied successfully!",
-      position: "topRight",
-    });
-
-
   };
 
-  console.log(filterData)
+  useEffect(() => {
+    axios.post(`http://localhost:5000/api/admin/colors/view`, {
+      name: filterData.name,
+      page: currentPage
+    })
+      .then((result) => {
+        if (result.data._status == true) {
+          setColors(result.data._data);
+          settotalPages(result.data._paginate.total_pages)
+        } else {
+          setColors([]);
+          settotalPages(0)
+        }
 
+      })
+      .catch(() => {
+        iziToast.error({
+          title: 'Error',
+          message: 'Something went wrong !',
+          position: 'topRight',
+        });
+      })
+  }, [filterData, currentPage, apiStatus])
 
+  const [selectedRecord, setSelectedRecord] = useState([])
 
-  const SingleCheckSelect = (id) => {
+  const singleCheckSelect = (id) => {
     if (selectedRecord.includes(id)) {
       let finalData = selectedRecord.filter((v) => {
         if (v != id) {
@@ -45,33 +66,57 @@ export default function ViewColor() {
       let finalData = [...selectedRecord, id]
       setSelectedRecord(finalData)
     }
+  }
 
+  const allCheckBoxSelect = () => {
+    if (colors.length == selectedRecord.length) {
+      setSelectedRecord([]);
+    } else {
+      var values = [];
 
+      colors.forEach((v) => {
+        values.push(v._id);
+      })
+
+      setSelectedRecord([...values]);
+
+    }
   }
 
   const changeStatus = () => {
     if (selectedRecord.length > 0) {
-      iziToast.success({
-        title: "Success",
-        message: "Status Change suces",
-        position: "topRight",
-      });
-
-      setSelectedRecord([])
+      axios.put(`http://localhost:5000/api/admin/colors/change-status`, {
+        ids: selectedRecord,
+      })
+        .then((result) => {
+          if (result.data._status == true) {
+            iziToast.success({
+              title: "Change Status",
+              message: result.data._message,
+              position: "topRight",
+            });
+            setSelectedRecord([]);
+            setApiStatus(!apiStatus);
+          }
+        })
+        .catch(() => {
+          iziToast.error({
+            title: 'Error',
+            message: 'Something went wrong !',
+            position: 'topRight',
+          });
+        })
     } else {
       iziToast.error({
         title: "No Selection",
-        message: "Please select at least one record to delete.",
+        message: "Please select at least one color to change status.",
         position: "topRight",
       });
     }
-
-
-  }
+  };
 
   const deleteRecords = () => {
     if (selectedRecord.length > 0) {
-
       iziToast.question({
         timeout: 20000,
         close: true,
@@ -79,34 +124,21 @@ export default function ViewColor() {
         displayMode: "once",
         id: "delete-confirm",
         zindex: 999999,
-        title: "Are you sure?",
-        message: "Do you really want to delete selected records? This action cannot be undone.",
+        title: "Confirm Delete",
+        message: "Are you sure you want to delete ?",
         position: "center",
         buttons: [
           [
-            "<button><b>YES</b></button>",
+            "<button><b>Yes</b></button>",
             function (instance, toast) {
-              // ---- Perform Delete ----
-              setSelectedRecord([]);
-
-              iziToast.success({
-                title: "Deleted",
-                message: "Selected records have been deleted successfully.",
-                position: "topRight",
-              });
-
+              destroy();
               instance.hide({ transitionOut: "fadeOut" }, toast);
             },
             true,
           ],
           [
-            "<button>NO</button>",
+            "<button>No</button>",
             function (instance, toast) {
-              iziToast.info({
-                title: "Cancelled",
-                message: "Delete action cancelled.",
-                position: "topRight",
-              });
               instance.hide({ transitionOut: "fadeOut" }, toast);
             },
           ],
@@ -115,15 +147,36 @@ export default function ViewColor() {
 
     } else {
       iziToast.error({
-        title: "No Selection",
-        message: "Please select at least one record to delete.",
+        title: "Error",
+        message: "Please select at least one color to delete.",
         position: "topRight",
       });
     }
   };
 
-
-
+  const destroy = () => {
+    axios.put(`http://localhost:5000/api/admin/colors/delete`, {
+      ids: selectedRecord,
+    })
+      .then((result) => {
+        if (result.data._status == true) {
+          iziToast.success({
+            title: "Delete",
+            message: result.data._message,
+            position: "topRight",
+          });
+          setSelectedRecord([]);
+          setApiStatus(!apiStatus);
+        }
+      })
+      .catch(() => {
+        iziToast.error({
+          title: 'Error',
+          message: 'Something went wrong !',
+          position: 'topRight',
+        });
+      })
+  };
 
   return (
     <>
@@ -170,7 +223,6 @@ export default function ViewColor() {
                   type="text"
                   name="name"
                   autoComplete="off"
-
                   placeholder="Enter Color Name"
                   className="border-2 border-gray-300 shadow-sm w-full rounded-md px-2  py-1 text-[17px]"
                 />
@@ -182,7 +234,6 @@ export default function ViewColor() {
                   type="text"
                   name="code"
                   autoComplete="off"
-
                   placeholder="#FF0000"
                   className="border-2 border-gray-300 shadow-sm w-full rounded-md px-2  py-1 text-[17px]"
                 />
@@ -211,7 +262,7 @@ export default function ViewColor() {
 
 
         {/* ---------------- MAIN CONTENT ---------------- */}
-        <div className="max-w-[1220px] mx-auto py-5">
+        <div className=" mx-auto px-5 py-5">
 
           {/* ---------------- Header ---------------- */}
           <div className="bg-slate-100 flex justify-between items-center py-3 px-4 rounded-t-md border border-slate-400">
@@ -221,7 +272,7 @@ export default function ViewColor() {
 
               {/* Filter Button */}
               <button
-                onClick={() => setOpenFilter(true)}
+                onClick={() => setOpenFilter(!openFilter)}
                 className="flex items-center gap-2 bg-gray-200 cursor-pointer hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm border"
               >
                 <FaFilter /> Filter
@@ -243,64 +294,70 @@ export default function ViewColor() {
               <table className="w-full text-left text-gray-700">
                 <thead className="text-sm uppercase bg-gray-50 border-b">
                   <tr>
-                    <th className="px-2 w-[100px]  py-3"><input name="deleteCheck" id="purple-checkbox"
-                      type="checkbox"
-                      class="mr-2 w-4 h-4 cursor-pointer text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500" value="" />    Select</th>
-                    <th className="px-2 w-[60px]  py-3">S. No.</th>
-                    <th className="px-2  py-3">Name</th>
-                    <th className="px-2 w-[150px]  py-3">Color Code</th>
-                    <th className="px-2 w-[50px]  py-3">Order</th>
-                    <th className="px-2 w-[100px] py-3">Status</th>
-                    <th className="px-2 w-[100px]  py-3">Action</th>
+                    <th className="px-2 w-[125px] py-3">
+                      <input name="deleteCheck" id="purple-checkbox" type="checkbox"
+                      checked={ selectedRecord.length == colors.length ? true : false }
+                      onClick={ allCheckBoxSelect }
+                        className="mr-2 w-4 h-4 cursor-pointer text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500" value="" />    Select</th>
+                    <th className="px-2   py-3">Name</th>
+                    <th className="px-2   py-3">Code</th>
+                    <th className="px-2 w-[100px]  py-3">Order</th>
+                    <th className="px-2 w-[120px]  py-3">Status</th>
+                    <th className="px-2 w-[120px]  py-3">Action</th>
                   </tr>
                 </thead>
 
                 <tbody>
+                  {
+                    colors.length > 0
+                      ?
+                      colors.map((v, i) => {
+                        return (
+                          <>
+                            <tr className="bg-white border-b" key={i}>
+                              <td className="px-2 py-4">
+                                <input type="checkbox" onClick={() => singleCheckSelect(v._id)} checked={selectedRecord.includes(v._id)} className="w-4 h-4 cursor-pointer text-purple-600" />
+                              </td>
 
-                  {/* Row 1 */}
-                  <tr className="bg-white border-b">
-                    <td className="px-2  py-4">
-                      <input type="checkbox" onClick={() => SingleCheckSelect(1)} checked={selectedRecord.includes(1)} className="w-4 h-4 text-purple-600 cursor-pointer" />
-                    </td>
+                              <td className="px-2 py-4">{v.name}</td>
+                              <td className="px-2 py-4">{v.code}</td>
+                              <td className="px-2 py-4">{v.order}</td>
+                              {
+                                v.status == 1
+                                  ?
+                                  <td className="px-2 py-4 text-green-600 font-bold">Active</td>
+                                  :
+                                  <td className="px-2 py-4 text-red-600 font-bold">Inactive</td>
+                              }
 
-                    <td className="px-2  py-4">1</td>
-                    <td className="px-2  py-4">Red</td>
-                    <td className="px-2  py-4">#FF0000</td>
-                    <td className="px-2  py-4">1</td>
-                    <td className="px-2  py-4 text-green-600 font-bold">Active</td>
 
-                    <td className="px-2  py-4 flex gap-3">
-                      <Link>
-                        <svg fill="gold" className="w-5 h-5" viewBox="0 0 512 512">
-                          <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7z"></path>
-                        </svg>
-                      </Link>
-                    </td>
-                  </tr>
-
-                  {/* Row 2 */}
-                  <tr className="bg-white border-b">
-                    <td className="px-2 py-4">
-                      <input type="checkbox" onClick={() => SingleCheckSelect(2)} checked={selectedRecord.includes(2)} className="w-4 h-4 text-purple-600 cursor-pointer" />
-                    </td>
-
-                    <td className="px-2 py-4">2</td>
-                    <td className="px-2 py-4">Blue</td>
-                    <td className="px-2 py-4">#0000FF</td>
-                    <td className="px-2 py-4">2</td>
-                    <td className="px-2 py-4 text-red-600 font-bold">Inactive</td>
-
-                    <td className="px-2 py-4 ">
-                      <Link>
-                        <svg fill="gold" className="w-5 h-5" viewBox="0 0 512 512">
-                          <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7z"></path>
-                        </svg>
-                      </Link>
-                    </td>
-                  </tr>
+                              <td className="px-2 py-4 ">
+                                <Link to={`/color/update/${v._id}`}>
+                                  <svg fill="gold" className="w-5 h-5" viewBox="0 0 512 512">
+                                    <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7z"></path>
+                                  </svg>
+                                </Link>
+                              </td>
+                            </tr>
+                          </>
+                        )
+                      })
+                      :
+                      <tr className="bg-white border-b">
+                        <td className="px-2 py-4 text-center font-bold" colSpan={5}>No Record Found !</td>
+                      </tr>
+                  }
 
                 </tbody>
               </table>
+            </div>
+
+            <div className='p-5'>
+              <ResponsivePagination
+                current={currentPage}
+                total={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
 
