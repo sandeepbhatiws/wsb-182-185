@@ -1,8 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MdOutlineDriveFolderUpload } from "react-icons/md";
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+import axios from 'axios';
+
 export default function AddCategory() {
     let [errors, setErrors] = useState([]);
     let [SelectedImage, setSelectedImage] = useState("");
+    let [updateId, setUpdateId] = useState('');
+    let [categoryDetails, setCategoryDetails] = useState('');
 
     let handleimagechange = (event) => {
         const file = event.target.files[0];
@@ -15,9 +22,35 @@ export default function AddCategory() {
         }
     };
 
+    let params = useParams();
+
+    useEffect(() => {
+        if (params.id != undefined && params.id != '') {
+            setUpdateId(params.id);
+
+            axios.post(`${import.meta.env.VITE_CATEGORY_URL}/details/${params.id}`)
+                .then((result) => {
+                    if (result.data._status == true) {
+                        setCategoryDetails(result.data._data);
+                        setSelectedImage(result.data.image_path+'/'+result.data._data.image)
+                    } else {
+                        setCategoryDetails('');
+                    }
+                })
+                .catch(() => {
+                    iziToast.error({
+                        title: 'Error',
+                        message: 'Something went wrong !',
+                        position: 'topRight',
+                    });
+                })
+        }
+    }, [params]);
+
+    const navigate = useNavigate();
+
     let ErrorHandler = (event) => {
         let fieldName = event.target.name;
-
         if (event.target.value === "") {
             if (!errors.includes(fieldName)) {
                 setErrors([...errors, fieldName]);
@@ -25,6 +58,85 @@ export default function AddCategory() {
         } else {
             let updated = errors.filter((v) => v !== fieldName);
             setErrors(updated);
+        }
+    };
+
+    let formhandler = (event) => {
+        event.preventDefault();
+
+        let form = event.target;
+        let fields = form.querySelectorAll('input')
+
+        let newErrors = [];
+
+        fields.forEach((field) => {
+            if(field.name != 'image'){
+                if (!field.value.trim()) {
+                    newErrors.push(field.name);
+                }    
+            }
+        });
+
+        newErrors = [...new Set(newErrors)];
+        setErrors(newErrors);
+
+        console.log(newErrors);
+
+        if (newErrors.length === 0) {
+
+            if (updateId == '') {
+                axios.post(`${import.meta.env.VITE_CATEGORY_URL}/create`, event.target)
+                    .then((result) => {
+                        if (result.data._status == true) {
+                            event.target.reset()
+                            iziToast.success({
+                                title: 'Success',
+                                message: result.data._message,
+                                position: 'topRight',
+                            });
+                            navigate('/category/view');
+                        } else {
+                            iziToast.error({
+                                title: 'Error',
+                                message: result.data._message,
+                                position: 'topRight',
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        iziToast.error({
+                            title: 'Error',
+                            message: 'Something went wrong !',
+                            position: 'topRight',
+                        });
+                    })
+            } else {
+                axios.put(`${import.meta.env.VITE_CATEGORY_URL}/update/${updateId}`, event.target)
+                    .then((result) => {
+                        if (result.data._status == true) {
+                            event.target.reset()
+                            iziToast.success({
+                                title: 'Success',
+                                message: result.data._message,
+                                position: 'topRight',
+                            });
+                            navigate('/category/view');
+                        } else {
+                            iziToast.error({
+                                title: 'Error',
+                                message: result.data._message,
+                                position: 'topRight',
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        iziToast.error({
+                            title: 'Error',
+                            message: 'Something went wrong !',
+                            position: 'topRight',
+                        });
+                    })
+            }
         }
     };
 
@@ -51,7 +163,7 @@ export default function AddCategory() {
                             Add New Category
                         </h3>
 
-                        <form className="border border-t-0  flex bg-white p-6 rounded-b-lg shadow-sm">
+                        <form onSubmit={formhandler} className="border border-t-0  flex bg-white p-6 rounded-b-lg shadow-sm">
 
                             {/* IMAGE AREA */}
                             <div className='flex basis-[30%] flex-col items-center'>
@@ -99,6 +211,7 @@ export default function AddCategory() {
                                     {/* FILE INPUT */}
                                     <input
                                         type="file"
+                                        name='image'
                                         accept="image/*"
                                         onChange={handleimagechange}
                                         className="absolute z-20 inset-0 opacity-0 cursor-pointer"
@@ -118,6 +231,7 @@ export default function AddCategory() {
                                     <input
                                         type="text"
                                         name="name"
+                                        defaultValue={categoryDetails.name}
                                         autoComplete="off"
                                         onKeyUp={ErrorHandler}
                                         className="text-[17px] border border-gray-300 text-gray-900 rounded-lg focus:ring-gray-400 focus:border-gray-500 block w-full py-2.5 px-3"
@@ -138,23 +252,28 @@ export default function AddCategory() {
                                     <input
                                         type="number"
                                         name="order"
+                                        defaultValue={categoryDetails.order}
                                         min={1}
                                         autoComplete="off"
                                         className="text-[17px] border border-gray-300 text-gray-900 rounded-lg focus:ring-gray-400 focus:border-gray-500 block w-full py-2.5 px-3"
                                         placeholder="Enter order number"
                                     />
+
+                                    {errors.includes("order") && (
+                                        <p className="text-red-600 text-sm mt-1">Order is required</p>
+                                    )}
                                 </div>
                                 <div className=' flex justify-end'>
-                                     <button
-                                    type="submit"
-                                    className="mt-3 cursor-pointer text-white bg-gray-700 hover:bg-gray-800 
+                                    <button
+                                        type="submit"
+                                        className="mt-3 cursor-pointer text-white bg-gray-700 hover:bg-gray-800 
                                     focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-md px-6 py-2.5 shadow-sm transition-all"
-                                >
-                                    Submit
-                                </button>
+                                    >
+                                        Submit
+                                    </button>
                                 </div>
 
-                               
+
                             </div>
                         </form>
                     </div>

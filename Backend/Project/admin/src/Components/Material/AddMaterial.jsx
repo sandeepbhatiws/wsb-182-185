@@ -15,7 +15,7 @@ export default function AddMaterial() {
     if (params.id != undefined && params.id != '') {
       setUpdateId(params.id);
 
-      axios.post(`http://localhost:5000/api/admin/materials/details/${params.id}`)
+      axios.post(`${ import.meta.env.VITE_MATERIAL_URL }/details/${params.id}`)
         .then((result) => {
           if (result.data._status == true) {
             setMaterialDetails(result.data._data);
@@ -67,7 +67,7 @@ export default function AddMaterial() {
     if (newErrors.length === 0) {
 
       if (updateId == '') {
-        axios.post(`http://localhost:5000/api/admin/materials/create`, {
+        axios.post(`${ import.meta.env.VITE_MATERIAL_URL }/create`, {
           name: event.target.name.value,
           order: event.target.order.value
         })
@@ -96,7 +96,7 @@ export default function AddMaterial() {
             });
           })
       } else {
-        axios.put(`http://localhost:5000/api/admin/materials/update/${updateId}`, {
+        axios.put(`${ import.meta.env.VITE_MATERIAL_URL }/update/${updateId}`, {
           name: event.target.name.value,
           order: event.target.order.value
         })

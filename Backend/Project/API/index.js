@@ -18,6 +18,9 @@ server.get('/', (request, response) => {
     response.send('Server Started !');
 })
 
+server.use('/uploads/categories', express.static('uploads/categories'));
+server.use('/uploads/products', express.static('uploads/products'));
+
 // Website
 
 
@@ -28,6 +31,9 @@ server.get('/', (request, response) => {
 require('./src/routes/admin/default.route')(server);
 require('./src/routes/admin/material.route')(server);
 require('./src/routes/admin/color.route')(server);
+require('./src/routes/admin/category.route')(server);
+require('./src/routes/admin/subCategory.route')(server);
+require('./src/routes/admin/subSubCategory.route')(server);
 
 
 

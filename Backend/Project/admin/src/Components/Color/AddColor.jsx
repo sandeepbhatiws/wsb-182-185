@@ -15,7 +15,7 @@ export default function AddColor() {
         if (params.id != undefined && params.id != '') {
             setUpdateId(params.id);
 
-            axios.post(`http://localhost:5000/api/admin/colors/details/${params.id}`)
+            axios.post(`${ import.meta.env.VITE_COLOR_URL }/details/${params.id}`)
                 .then((result) => {
                     if (result.data._status == true) {
                         setColorDetails(result.data._data);
@@ -67,7 +67,7 @@ export default function AddColor() {
         if (newErrors.length === 0) {
 
             if (updateId == '') {
-                axios.post(`http://localhost:5000/api/admin/colors/create`, {
+                axios.post(`${ import.meta.env.VITE_COLOR_URL }/create`, {
                     name: event.target.name.value,
                     code: event.target.code.value,
                     order: event.target.order.value
@@ -97,7 +97,7 @@ export default function AddColor() {
                         });
                     })
             } else {
-                axios.put(`http://localhost:5000/api/admin/colors/update/${updateId}`, {
+                axios.put(`${ import.meta.env.VITE_COLOR_URL }/update/${updateId}`, {
                     name: event.target.name.value,
                     code: event.target.code.value,
                     order: event.target.order.value

@@ -1,0 +1,314 @@
+const subCategoryModal = require("../../models/subCategory");
+var slugify = require('slugify')
+require('dotenv').config()
+
+const generateUniqueSlug = async (Model, baseSlug) => {
+  let slug = baseSlug;
+  let count = 0;
+
+  // Loop to find unique slug
+  while (await Model.findOne({ slug })) {
+    count++;
+    slug = `${baseSlug}-${count}`;
+  }
+
+  return slug;
+};
+
+exports.create = async (request, response) => {
+    const dataSave = request.body;
+
+    if(request.file){
+        if(request.file.filename){
+            dataSave.image = request.file.filename
+        }
+    }
+
+    if(request.body.name != ''){
+        var slug = slugify(request.body.name, {
+            lower: true,
+            strict: true,
+        })
+
+        dataSave.slug = await generateUniqueSlug(subCategoryModal, slug)
+    }
+
+    subCategoryModal(dataSave).save()
+        .then((result) => {
+            const data = {
+                _status: true,
+                _message: 'Record created succussfully !',
+                data: result
+            }
+
+            response.send(data);
+        })
+        .catch((error) => {
+            var errorMessages = {};
+
+            for (var index in error.errors) {
+                errorMessages[index] = error.errors[index].message;
+            }
+
+            const data = {
+                _status: false,
+                _message: 'Something went wrong !',
+                _error: errorMessages,
+                data: null
+            }
+
+            response.send(data);
+        })
+}
+
+exports.view = async (request, response) => {
+
+    var page = 1;
+    var limit = 15;
+
+    if(request.body){
+        if(request.body.page != undefined && request.body.page != ''){
+            page = request.body.page;
+        }
+
+        if(request.body.limit != undefined && request.body.limit != ''){
+            limit = request.body.limit;
+        }
+    }
+
+    var skip = (page-1) * limit;
+
+    const andCondition = [
+        {
+            deleted_at: null,
+        }
+    ];
+
+    const orCondition = [];
+
+    if (request.body) {
+        if (request.body.name != undefined) {
+            if (request.body.name != '') {
+                var name = new RegExp(request.body.name,"i");
+                andCondition.push({ name: name })
+            }
+        }
+
+        if (request.body.parent_category_id != undefined) {
+            if (request.body.parent_category_id != '') {
+                andCondition.push({ parent_category_id: request.body.parent_category_id })
+            }
+        }
+
+        if (request.body.status != undefined) {
+            if (request.body.status != '') {
+                andCondition.push({ status: request.body.status })
+            }
+        }
+    }
+
+    if (andCondition.length > 0) {
+        var filter = { $and: andCondition }
+    } else {
+        var filter = {}
+    }
+
+    if (orCondition.length > 0) {
+        filter.$or = orCondition;
+    }
+
+    var totalRecords = await subCategoryModal.find(filter).countDocuments();
+
+    var paginate = {
+        current_page : page, 
+        total_pages : Math.ceil(totalRecords/limit),
+        total_records : totalRecords
+    }
+
+    subCategoryModal.find(filter)
+        .select('name parent_category_id slug image order status')
+        .populate('parent_category_id', 'name slug')
+        .limit(limit).skip(skip)
+        .sort({
+            _id: 'desc'
+        })
+        .then((result) => {
+            if (result.length > 0) {
+                const data = {
+                    _status: true,
+                    _message: 'Data fetch successfully !',
+                    'image_path' : process.env.category_image,
+                    _paginate : paginate,
+                    _data: result
+                }
+
+                response.send(data)
+            } else {
+                const data = {
+                    _status: false,
+                    _message: 'No Record Found !',
+                    _data: []
+                }
+
+                response.send(data)
+            }
+        })
+        .catch(() => {
+            const data = {
+                _status: false,
+                _message: 'Something went wrong !',
+                _data: []
+            }
+
+            response.send(data)
+        })
+}
+
+exports.details = async (request, response) => {
+
+    subCategoryModal.findOne({
+        _id: request.params.id,
+        deleted_at : null
+    })
+    .then((result) => {
+        if (result) {
+            const data = {
+                _status: true,
+                _message: 'Data fetch successfully !',
+                'image_path' : process.env.category_image,
+                _data: result
+            }
+
+            response.send(data)
+        } else {
+            const data = {
+                _status: false,
+                _message: 'No Record Found !',
+                _data: null
+            }
+
+            response.send(data)
+        }
+    })
+    .catch(() => {
+        const data = {
+            _status: false,
+            _message: 'Something went wrong !',
+            _data: null
+        }
+
+        response.send(data)
+    })
+}
+
+exports.update = async (request, response) => {
+    const dataSave = request.body;
+
+    if(request.file){
+        if(request.file.filename){
+            dataSave.image = request.file.filename
+        }
+    }
+
+    if(request.body.name != ''){
+        var slug = slugify(request.body.name, {
+            lower: true,
+            strict: true,
+        })
+
+        dataSave.slug = await generateUniqueSlug(subCategoryModal, slug)
+    }
+
+    dataSave.updated_at = Date.now();
+
+    subCategoryModal.updateOne({
+        _id: request.params.id
+    }, {
+        $set: dataSave
+    })
+    .then((result) => {
+        const data = {
+            _status: true,
+            _message: 'Record updated succussfully !',
+            data: result
+        }
+
+        response.send(data);
+    })
+    .catch((error) => {
+        const data = {
+            _status: false,
+            _message: 'Something went wrong !',
+            data: null
+        }
+
+        response.send(data);
+    })
+}
+
+exports.changeStatus = async (request, response) => {
+    subCategoryModal.updateMany(
+        { _id: request.body.ids },
+        [
+            {
+                $set: {
+                    status: { $not: "$status" }   // toggle status
+                }
+            }
+        ],
+        {
+            updatePipeline: true
+        }
+    )
+        .then((result) => {
+            const data = {
+                _status: true,
+                _message: 'Status changed succussfully.',
+                _data: result
+            }
+
+            response.send(data);
+
+        })
+        .catch((getError) => {
+
+            const data = {
+                _status: false,
+                _message: 'Something went wrong !!',
+                _data: ''
+            }
+
+            response.send(data);
+        })
+}
+
+exports.destroy = async (request, response) => {
+    const dataSave = {};
+
+    dataSave.deleted_at = Date.now();
+
+    subCategoryModal.updateMany({
+        _id: request.body.ids
+    }, {
+        $set: dataSave
+    })
+        .then((result) => {
+            const data = {
+                _status: true,
+                _message: 'Record deleted succussfully !',
+                data: result
+            }
+
+            response.send(data);
+        })
+        .catch((error) => {
+
+            const data = {
+                _status: false,
+                _message: 'Something went wrong !',
+                data: null
+            }
+
+            response.send(data);
+        })
+}

@@ -27,7 +27,7 @@ export default function ViewMaterial() {
   };
 
   useEffect(() => {
-    axios.post(`http://localhost:5000/api/admin/materials/view`, {
+    axios.post(`${ import.meta.env.VITE_MATERIAL_URL }/view`, {
       name: filterData.name,
       page: currentPage
     })
@@ -83,7 +83,7 @@ export default function ViewMaterial() {
   }
   const changeStatus = () => {
     if (selectedRecord.length > 0) {
-      axios.put(`http://localhost:5000/api/admin/materials/change-status`, {
+      axios.put(`${ import.meta.env.VITE_MATERIAL_URL }/change-status`, {
         ids: selectedRecord,
       })
         .then((result) => {
@@ -153,7 +153,7 @@ export default function ViewMaterial() {
   };
 
   const destroy = () => {
-    axios.put(`http://localhost:5000/api/admin/materials/delete`, {
+    axios.put(`${ import.meta.env.VITE_MATERIAL_URL }/delete`, {
       ids: selectedRecord,
     })
     .then((result) => {

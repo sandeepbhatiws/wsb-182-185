@@ -28,7 +28,7 @@ export default function ViewColor() {
   };
 
   useEffect(() => {
-    axios.post(`http://localhost:5000/api/admin/colors/view`, {
+    axios.post(`${ import.meta.env.VITE_COLOR_URL }/view`, {
       name: filterData.name,
       page: currentPage
     })
@@ -85,7 +85,7 @@ export default function ViewColor() {
 
   const changeStatus = () => {
     if (selectedRecord.length > 0) {
-      axios.put(`http://localhost:5000/api/admin/colors/change-status`, {
+      axios.put(`${ import.meta.env.VITE_COLOR_URL }/change-status`, {
         ids: selectedRecord,
       })
         .then((result) => {
@@ -155,7 +155,7 @@ export default function ViewColor() {
   };
 
   const destroy = () => {
-    axios.put(`http://localhost:5000/api/admin/colors/delete`, {
+    axios.put(`${ import.meta.env.VITE_COLOR_URL }/delete`, {
       ids: selectedRecord,
     })
       .then((result) => {
