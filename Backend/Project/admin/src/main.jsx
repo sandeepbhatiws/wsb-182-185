@@ -48,10 +48,12 @@ createRoot(document.getElementById('root')).render(
         </Route>
         <Route path='sub-category'>
           <Route path='add' element={<AddSubCategory />} />
+          <Route path='update/:id' element={<AddSubCategory />} />
           <Route path='view' element={<ViewSubCattegory />} />
         </Route>
         <Route path='sub-sub-category'>
           <Route path='add' element={<AddSubSubCategory />} />
+          <Route path='update/:id' element={<AddSubSubCategory />} />
           <Route path='view' element={<ViewSubSubCategory />} />
         </Route>
         <Route path='product'>

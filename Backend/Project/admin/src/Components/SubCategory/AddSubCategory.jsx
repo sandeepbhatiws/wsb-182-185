@@ -1,10 +1,39 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MdOutlineDriveFolderUpload } from "react-icons/md";
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+import axios from 'axios';
 
 export default function AddSubCategory() {
 
+    const [categories, setCategories] = useState([]);
     let [errors, setErrors] = useState([]);
     let [SelectedImage, setSelectedImage] = useState("");
+    let [updateId, setUpdateId] = useState('');
+    let [subCategoryDetails, setSubCategoryDetails] = useState('');
+
+    // Parent Category API
+    useEffect(() => {
+        axios.post(`${import.meta.env.VITE_CATEGORY_URL}/view`, {
+            limit: 99999999,
+            status: 1
+        })
+            .then((result) => {
+                if (result.data._status == true) {
+                    setCategories(result.data._data);
+                } else {
+                    setCategories([]);
+                }
+            })
+            .catch(() => {
+                iziToast.error({
+                    title: 'Error',
+                    message: 'Something went wrong !',
+                    position: 'topRight',
+                });
+            })
+    }, [])
 
     let handleimagechange = (event) => {
         const file = event.target.files[0];
@@ -17,9 +46,35 @@ export default function AddSubCategory() {
         }
     };
 
+    let params = useParams();
+
+    useEffect(() => {
+        if (params.id != undefined && params.id != '') {
+            setUpdateId(params.id);
+
+            axios.post(`${import.meta.env.VITE_SUB_CATEGORY_URL}/details/${params.id}`)
+                .then((result) => {
+                    if (result.data._status == true) {
+                        setSubCategoryDetails(result.data._data);
+                        setSelectedImage(result.data.image_path+'/'+result.data._data.image)
+                    } else {
+                        setSubCategoryDetails('');
+                    }
+                })
+                .catch(() => {
+                    iziToast.error({
+                        title: 'Error',
+                        message: 'Something went wrong !',
+                        position: 'topRight',
+                    });
+                })
+        }
+    }, [params]);
+
+    const navigate = useNavigate();
+
     let ErrorHandler = (event) => {
         let fieldName = event.target.name;
-
         if (event.target.value === "") {
             if (!errors.includes(fieldName)) {
                 setErrors([...errors, fieldName]);
@@ -29,6 +84,88 @@ export default function AddSubCategory() {
             setErrors(updated);
         }
     };
+
+    let formhandler = (event) => {
+        event.preventDefault();
+
+        let form = event.target;
+        let fields = form.querySelectorAll('input, select')
+
+        console.log(fields);
+
+        let newErrors = [];
+
+        fields.forEach((field) => {
+            if(field.name != 'image'){
+                if (!field.value.trim()) {
+                    newErrors.push(field.name);
+                }    
+            }
+        });
+
+        newErrors = [...new Set(newErrors)];
+        setErrors(newErrors);
+
+        console.log(newErrors);
+
+        if (newErrors.length === 0) {
+
+            if (updateId == '') {
+                axios.post(`${import.meta.env.VITE_SUB_CATEGORY_URL}/create`, event.target)
+                    .then((result) => {
+                        if (result.data._status == true) {
+                            event.target.reset()
+                            iziToast.success({
+                                title: 'Success',
+                                message: result.data._message,
+                                position: 'topRight',
+                            });
+                            navigate('/sub-category/view');
+                        } else {
+                            iziToast.error({
+                                title: 'Error',
+                                message: result.data._message,
+                                position: 'topRight',
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        iziToast.error({
+                            title: 'Error',
+                            message: 'Something went wrong !',
+                            position: 'topRight',
+                        });
+                    })
+            } else {
+                axios.put(`${import.meta.env.VITE_SUB_CATEGORY_URL}/update/${updateId}`, event.target)
+                    .then((result) => {
+                        if (result.data._status == true) {
+                            event.target.reset()
+                            iziToast.success({
+                                title: 'Success',
+                                message: result.data._message,
+                                position: 'topRight',
+                            });
+                            navigate('/sub-category/view');
+                        } else {
+                            iziToast.error({
+                                title: 'Error',
+                                message: result.data._message,
+                                position: 'topRight',
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        iziToast.error({
+                            title: 'Error',
+                            message: 'Something went wrong !',
+                            position: 'topRight',
+                        });
+                    })
+            }
+        }
+    };
+
     return (
         <>
             <section className="w-full">
@@ -52,7 +189,7 @@ export default function AddSubCategory() {
                             Add New Sub Category
                         </h3>
 
-                        <form className="border border-t-0  flex bg-white p-6 rounded-b-lg shadow-sm">
+                        <form onSubmit={formhandler} className="border border-t-0  flex bg-white p-6 rounded-b-lg shadow-sm">
 
                             {/* IMAGE AREA */}
                             <div className='flex basis-[30%] flex-col items-center'>
@@ -86,8 +223,6 @@ export default function AddSubCategory() {
                                         </div>
                                     )}
 
-
-
                                     {/* ---- SHOW SELECTED IMAGE ---- */}
                                     {SelectedImage && (
                                         <img
@@ -100,6 +235,7 @@ export default function AddSubCategory() {
                                     {/* FILE INPUT */}
                                     <input
                                         type="file"
+                                        name='image'
                                         onChange={handleimagechange}
                                         className="absolute z-20 inset-0 opacity-0 cursor-pointer"
                                     />
@@ -108,24 +244,26 @@ export default function AddSubCategory() {
 
                             {/* FORM FIELDS */}
                             <div className='basis-[70%]'>
-
                                 {/*Select Category  */}
                                 <div className="mb-6">
                                     <label className="block mb-2 text-md font-medium text-gray-700">
                                         Select Parent Category
                                     </label>
 
-                                    <select onKeyUp={ErrorHandler} id="default" name="parent_id" className="text-[17px] border cursor-pointer border-gray-300 text-gray-900 rounded-lg focus:ring-gray-400 focus:border-gray-500 block w-full py-2.5 px-3">
+                                    <select onChange={ErrorHandler} id="default" name="parent_category_id" className="text-[17px] border cursor-pointer border-gray-300 text-gray-900 rounded-lg focus:ring-gray-400 focus:border-gray-500 block w-full py-2.5 px-3">
                                         <option className='cursor-pointer' value=''>Select Category</option>
-
+                                        {
+                                            categories.map((v, i) => {
+                                                return (
+                                                    <option selected={ subCategoryDetails.parent_category_id == v._id } key={i} className='cursor-pointer' value={v._id}>{v.name}</option>
+                                                )
+                                            })
+                                        }
                                     </select>
-
-
-                                    {errors.includes("parent_id") && (
-                                        <p className="text-red-600 text-sm mt-1">parent-category is required</p>
+                                    {errors.includes("parent_category_id") && (
+                                        <p className="text-red-600 text-sm mt-1">parent category is required</p>
                                     )}
                                 </div>
-
 
                                 {/*Sub Category Name */}
                                 <div className="mb-6">
@@ -136,6 +274,7 @@ export default function AddSubCategory() {
                                     <input
                                         type="text"
                                         name="name"
+                                        defaultValue={subCategoryDetails.name}
                                         autoComplete="off"
                                         onKeyUp={ErrorHandler}
                                         className="text-[17px] border border-gray-300 text-gray-900 rounded-lg focus:ring-gray-400 focus:border-gray-500 block w-full py-2.5 px-3"
@@ -156,11 +295,15 @@ export default function AddSubCategory() {
                                     <input
                                         type="number"
                                         name="order"
+                                        defaultValue={subCategoryDetails.order}
                                         min={1}
                                         autoComplete="off"
                                         className="text-[17px] border border-gray-300 text-gray-900 rounded-lg focus:ring-gray-400 focus:border-gray-500 block w-full py-2.5 px-3"
                                         placeholder="Enter order number"
                                     />
+                                    {errors.includes("order") && (
+                                        <p className="text-red-600 text-sm mt-1">order is required</p>
+                                    )}
                                 </div>
                                 <div className=' flex justify-end'>
                                     <button
@@ -171,8 +314,6 @@ export default function AddSubCategory() {
                                         Submit
                                     </button>
                                 </div>
-
-
                             </div>
                         </form>
                     </div>
